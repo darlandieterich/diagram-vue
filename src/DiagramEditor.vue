@@ -306,6 +306,9 @@ export default {
       this.settings = Object.assign({}, val);
       this.changeGrid();
       this.isSettingsModalActive = false;
+    },
+    createHistory() {
+      //Here stringfy object  graphData and save in vetor and last subscribe in cookie
     }
   }
 };
