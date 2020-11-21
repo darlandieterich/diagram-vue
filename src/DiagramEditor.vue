@@ -256,10 +256,10 @@ export default {
       this.$emit("linkClicked", id);
     },
     nodeRemoved(id) {
-      this.$emit("nodeRemoved", id)
+      this.$emit("nodeRemoved", id);
     },
     linkRemoved(id) {
-      this.$emit("linkRemoved", id)
+      this.$emit("linkRemoved", id);
     },
     nodeChanged(obj) {
       this.graphData.nodes = obj.nodes;
