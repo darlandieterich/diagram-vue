@@ -42,6 +42,11 @@
       @ok="updateSettings"
       @cancel="cancel"
     />
+    <VSelect @change="delorean(dh.object)">
+      <option v-for="dh in dataHistory" :key="dh.datetime" :value="dh.datetime">
+        {{ dh.datetime }}
+      </option>
+    </VSelect>
     <Diagram
       :width="graphData.width || 2000"
       :height="graphData.height || 1000"
@@ -120,6 +125,7 @@ export default {
         return this.value;
       },
       set(val) {
+        console.log("teste");
         this.$emit("input", val);
       }
     }
@@ -162,11 +168,13 @@ export default {
           arrow: "none"
         }
       },
-      isAskClearDiagram: false
+      isAskClearDiagram: false,
+      dataHistory: []
     };
   },
   methods: {
     clearDiagram() {
+      this.createHistory();
       this.graphData.nodes = [];
       this.graphData.links = [];
       this.isAskClearDiagram = false;
@@ -189,6 +197,7 @@ export default {
       this.isSettingsModalActive = false;
     },
     addNode(item) {
+      this.createHistory();
       this.graphData.nodes.push({
         id: this.generateID(),
         content: {
@@ -222,6 +231,7 @@ export default {
       this.isEditModalActive = true;
     },
     editNode(item) {
+      this.createHistory();
       let tmp = this.graphData.nodes.find(x => x.id === item.id);
       tmp.content.text = item.content.text;
       tmp.content.url = item.content.url;
@@ -239,6 +249,7 @@ export default {
       this.isEditLinkModalActive = true;
     },
     editLink(item) {
+      this.createHistory();
       let tmp = this.graphData.links.find(x => x.id === item.id);
       tmp.color = item.content.color;
       tmp.shape = item.content.shape;
@@ -256,9 +267,11 @@ export default {
       this.$emit("linkClicked", id);
     },
     nodeRemoved(id) {
+      this.createHistory();
       this.$emit("nodeRemoved", id);
     },
     linkRemoved(id) {
+      this.createHistory();
       this.$emit("linkRemoved", id);
     },
     nodeChanged(obj) {
@@ -308,7 +321,16 @@ export default {
       this.isSettingsModalActive = false;
     },
     createHistory() {
-      //Here stringfy object  graphData and save in vetor and last subscribe in cookie
+      console.info("Creating history...");
+      this.dataHistory.push({
+        datetime: new Date().toISOString(),
+        object: JSON.stringify(this.graphData)
+      });
+      console.log(this.dataHistory);
+    },
+    delorean(obj) {
+      console.log(obj)
+      this.graphData = JSON.parse(obj);
     }
   }
 };
