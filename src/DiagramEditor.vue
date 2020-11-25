@@ -343,7 +343,7 @@ export default {
     createHistory() {
       console.info("Creating history...");
       this.dataHistory.push({
-        datetime: new Date().toISOString(),
+        datetime: new Date().toLocaleString(),
         object: JSON.stringify(this.graphData)
       });
     },
