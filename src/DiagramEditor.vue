@@ -343,13 +343,17 @@ export default {
     },
     createHistory() {
       console.info("Creating history...");
-      this.dataHistory.push({
-        datetime: new Date().toLocaleString(),
-        object: JSON.stringify(this.graphData)
-      });
+      let strfy = JSON.stringify(this.graphData);
+      let items = this.dataHistory.filter(item => item.object == strfy);
+      console.log(items)
+      if (items.length == 0) {
+        this.dataHistory.push({
+          datetime: new Date().toLocaleString(),
+          object: strfy
+        });
+      }
     },
     delorean(obj) {
-      console.log(obj);
       Object.assign(this.graphData, JSON.parse(obj));
     }
   }
