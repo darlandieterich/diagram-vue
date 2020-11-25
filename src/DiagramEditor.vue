@@ -42,8 +42,8 @@
       @ok="updateSettings"
       @cancel="cancel"
     />
-    <VSelect @change="delorean(dh.object)">
-      <option v-for="dh in dataHistory" :key="dh.datetime" :value="dh.datetime">
+    <VSelect v-model="historySelected" @changed="delorean(historySelected)">
+      <option v-for="(dh, idxdh) in dataHistory" :key="'history'+idxdh" :value="dh.object">
         {{ dh.datetime }}
       </option>
     </VSelect>
@@ -181,7 +181,8 @@ export default {
       },
       isAskClearDiagram: false,
       dataHistory: [],
-      dragging: false
+      dragging: false,
+      historySelected: {}
     };
   },
   methods: {
@@ -348,7 +349,8 @@ export default {
       });
     },
     delorean(obj) {
-      this.graphData = JSON.parse(obj);
+      console.log(obj);
+      Object.assign(this.graphData, JSON.parse(obj));
     }
   }
 };

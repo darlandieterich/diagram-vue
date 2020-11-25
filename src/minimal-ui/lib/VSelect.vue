@@ -21,7 +21,7 @@ export default {
     placeholder: {
       type: String,
       default: ""
-    }
+    },
   },
   mounted() {
     this.val = this.value;
@@ -37,8 +37,11 @@ export default {
     }
   },
   methods: {
-    onChange() {
-      if (this.value !== this.val) this.$emit("input", this.val);
+    onChange() {      
+      this.$emit("changed", this.val);
+      if (this.value !== this.val) {
+        this.$emit("input", this.val);
+      }
     }
   }
 };
