@@ -75,6 +75,8 @@
       @linkChanged="linkChanged"
       @nodeRemoved="nodeRemoved"
       @linkRemoved="linkRemoved"
+      @nodeClickedUp="nodeClickedUp"
+      @linkClickedUp="linkClickedUp"
     >
     </Diagram>
   </div>
@@ -133,7 +135,9 @@ export default {
     "graphData.nodes": {
       deep: true,
       handler() {
-        console.log("raaaaaA");
+        if (!this.dragging) {
+          this.createHistory();
+        }
       }
     }
   },
@@ -176,12 +180,13 @@ export default {
         }
       },
       isAskClearDiagram: false,
-      dataHistory: []
+      dataHistory: [],
+      dragging: false
     };
   },
   methods: {
     clearDiagram() {
-      this.createHistory();
+      //this.createHistory();
       this.graphData.nodes = [];
       this.graphData.links = [];
       this.isAskClearDiagram = false;
@@ -204,7 +209,7 @@ export default {
       this.isSettingsModalActive = false;
     },
     addNode(item) {
-      this.createHistory();
+      //this.createHistory();
       this.graphData.nodes.push({
         id: this.generateID(),
         content: {
@@ -238,7 +243,7 @@ export default {
       this.isEditModalActive = true;
     },
     editNode(item) {
-      this.createHistory();
+      //this.createHistory();
       let tmp = this.graphData.nodes.find(x => x.id === item.id);
       tmp.content.text = item.content.text;
       tmp.content.url = item.content.url;
@@ -256,7 +261,7 @@ export default {
       this.isEditLinkModalActive = true;
     },
     editLink(item) {
-      this.createHistory();
+      //this.createHistory();
       let tmp = this.graphData.links.find(x => x.id === item.id);
       tmp.color = item.content.color;
       tmp.shape = item.content.shape;
@@ -268,18 +273,19 @@ export default {
       this.editable = false;
     },
     nodeClicked(id) {
-      console.log("clicado");
+      this.dragging = true;
       this.$emit("nodeClicked", id);
     },
     linkClicked(id) {
+      this.dragging = true;
       this.$emit("linkClicked", id);
     },
     nodeRemoved(id) {
-      this.createHistory();
+      //this.createHistory();
       this.$emit("nodeRemoved", id);
     },
     linkRemoved(id) {
-      this.createHistory();
+      //this.createHistory();
       this.$emit("linkRemoved", id);
     },
     nodeChanged(obj) {
@@ -287,6 +293,12 @@ export default {
     },
     linkChanged(obj) {
       this.graphData.links = obj.links;
+    },
+    nodeClickedUp(id) {
+      this.dragging = false;
+    },
+    linkClickedUp(id) {
+      this.dragging = false;
     },
     openInputModal() {
       this.isInputModalActive = true;
@@ -334,7 +346,6 @@ export default {
         datetime: new Date().toISOString(),
         object: JSON.stringify(this.graphData)
       });
-      console.log(this.dataHistory);
     },
     delorean(obj) {
       this.graphData = JSON.parse(obj);
