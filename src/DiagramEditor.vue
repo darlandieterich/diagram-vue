@@ -125,8 +125,15 @@ export default {
         return this.value;
       },
       set(val) {
-        console.log("teste");
         this.$emit("input", val);
+      }
+    }
+  },
+  watch: {
+    "graphData.nodes": {
+      deep: true,
+      handler() {
+        console.log("raaaaaA");
       }
     }
   },
@@ -261,6 +268,7 @@ export default {
       this.editable = false;
     },
     nodeClicked(id) {
+      console.log("clicado");
       this.$emit("nodeClicked", id);
     },
     linkClicked(id) {
@@ -329,7 +337,6 @@ export default {
       console.log(this.dataHistory);
     },
     delorean(obj) {
-      console.log(obj)
       this.graphData = JSON.parse(obj);
     }
   }

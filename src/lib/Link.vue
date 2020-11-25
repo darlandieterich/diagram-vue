@@ -201,6 +201,7 @@ export default {
     },
     mouseup() {
       this.startPosition = null;
+      this.$emit("clickup", this.id);
       document.removeEventListener("mousemove", this.mousemove);
       document.removeEventListener("mouseup", this.mouseup);
     },

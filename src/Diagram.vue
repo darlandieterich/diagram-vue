@@ -57,6 +57,7 @@
           :scale="scale"
           @editNode="editNode"
           @click="clickNode"
+          @clickup="clickUpNode"
           @select="selectNode"
           @copy="copyNode"
           @updateLocation="updateNodeLocation"
@@ -78,6 +79,7 @@
           :scale="scale"
           @editLink="editLink"
           @click="clickLink"
+          @clickup="clickUpLink"
           @select="selectLink"
           @updateLocation="updateLinkLocation"
           @remove="removeLink"
@@ -232,8 +234,14 @@ export default {
     clickNode(id) {
       this.$emit("nodeClicked", id);
     },
+    clickUpNode(id) {
+      this.$emit("nodeClickedUp", id);
+    },
     clickLink(id) {
       this.$emit("linkClicked", id);
+    },
+    clickUpLink(id){
+      this.$emit("linkClickedUp", id);
     },
     selectNode(id) {
       this.selectedNode = id;
