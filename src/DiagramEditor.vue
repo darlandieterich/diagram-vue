@@ -9,6 +9,19 @@
     <VButton @click="downloadSVG">Download SVG</VButton>
     <VButton @click="isAskClearDiagram = true">Clear Diagram</VButton>
     <VButton @click="openSettingsModal">Settings</VButton>
+    <VSelect
+      v-model="historySelected"
+      :placeholder="'Select the History'"
+      @changed="delorean(historySelected)"
+    >
+      <option
+        v-for="(dh, idxdh) in dataHistory"
+        :key="'history' + idxdh"
+        :value="dh.object"
+      >
+        {{ dh.datetime }}
+      </option>
+    </VSelect>
     <AskModal :isActive="isAskClearDiagram" @ok="clearDiagram" @cancel="cancel">
       Do you wanna clear the Diagram?
     </AskModal>
@@ -42,15 +55,6 @@
       @ok="updateSettings"
       @cancel="cancel"
     />
-    <VSelect v-model="historySelected" @changed="delorean(historySelected)">
-      <option
-        v-for="(dh, idxdh) in dataHistory"
-        :key="'history' + idxdh"
-        :value="dh.object"
-      >
-        {{ dh.datetime }}
-      </option>
-    </VSelect>
     <Diagram
       :width="graphData.width || 2000"
       :height="graphData.height || 1000"
@@ -190,12 +194,11 @@ export default {
       isAskClearDiagram: false,
       dataHistory: [],
       dragging: false,
-      historySelected: {}
+      historySelected: null
     };
   },
   methods: {
     clearDiagram() {
-      //this.createHistory();
       this.graphData.nodes = [];
       this.graphData.links = [];
       this.isAskClearDiagram = false;
@@ -218,7 +221,6 @@ export default {
       this.isSettingsModalActive = false;
     },
     addNode(item) {
-      //this.createHistory();
       this.graphData.nodes.push({
         id: this.generateID(),
         content: {
@@ -252,7 +254,6 @@ export default {
       this.isEditModalActive = true;
     },
     editNode(item) {
-      //this.createHistory();
       let tmp = this.graphData.nodes.find(x => x.id === item.id);
       tmp.content.text = item.content.text;
       tmp.content.url = item.content.url;
@@ -270,7 +271,6 @@ export default {
       this.isEditLinkModalActive = true;
     },
     editLink(item) {
-      //this.createHistory();
       let tmp = this.graphData.links.find(x => x.id === item.id);
       tmp.color = item.content.color;
       tmp.shape = item.content.shape;
