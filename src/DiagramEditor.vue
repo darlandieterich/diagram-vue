@@ -43,7 +43,11 @@
       @cancel="cancel"
     />
     <VSelect v-model="historySelected" @changed="delorean(historySelected)">
-      <option v-for="(dh, idxdh) in dataHistory" :key="'history'+idxdh" :value="dh.object">
+      <option
+        v-for="(dh, idxdh) in dataHistory"
+        :key="'history' + idxdh"
+        :value="dh.object"
+      >
         {{ dh.datetime }}
       </option>
     </VSelect>
@@ -135,9 +139,13 @@ export default {
     "graphData.nodes": {
       deep: true,
       handler() {
-        if (!this.dragging) {
-          this.createHistory();
-        }
+        this.createHistory();
+      }
+    },
+    "graphData.links": {
+      deep: true,
+      handler() {
+        this.createHistory();
       }
     }
   },
@@ -282,11 +290,9 @@ export default {
       this.$emit("linkClicked", id);
     },
     nodeRemoved(id) {
-      //this.createHistory();
       this.$emit("nodeRemoved", id);
     },
     linkRemoved(id) {
-      //this.createHistory();
       this.$emit("linkRemoved", id);
     },
     nodeChanged(obj) {
@@ -297,9 +303,11 @@ export default {
     },
     nodeClickedUp(id) {
       this.dragging = false;
+      this.$emit("nodeClickedUp", id);
     },
     linkClickedUp(id) {
       this.dragging = false;
+      this.$emit("linkClickedUp", id);
     },
     openInputModal() {
       this.isInputModalActive = true;
@@ -342,15 +350,15 @@ export default {
       this.isSettingsModalActive = false;
     },
     createHistory() {
-      console.info("Creating history...");
-      let strfy = JSON.stringify(this.graphData);
-      let items = this.dataHistory.filter(item => item.object == strfy);
-      console.log(items)
-      if (items.length == 0) {
-        this.dataHistory.push({
-          datetime: new Date().toLocaleString(),
-          object: strfy
-        });
+      if (!this.dragging) {
+        let strfy = JSON.stringify(this.graphData);
+        let items = this.dataHistory.filter(item => item.object === strfy);
+        if (items.length === 0) {
+          this.dataHistory.push({
+            datetime: new Date().toLocaleString(),
+            object: strfy
+          });
+        }
       }
     },
     delorean(obj) {
