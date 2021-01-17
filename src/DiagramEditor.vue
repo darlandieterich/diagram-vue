@@ -19,7 +19,7 @@
         :key="'history' + idxdh"
         :value="dh.object"
       >
-        {{ dh.datetime }}
+        (ID: {{ dh.id }}) {{ dh.datetime }}
       </option>
     </VSelect>
     <AskModal :isActive="isAskClearDiagram" @ok="clearDiagram" @cancel="cancel">
@@ -140,17 +140,14 @@ export default {
     }
   },
   watch: {
-    "graphData.nodes": {
+    graphData: {
       deep: true,
       handler() {
-        this.createHistory();
+        //this.createHistory();
       }
     },
-    "graphData.links": {
-      deep: true,
-      handler() {
-        this.createHistory();
-      }
+    linkClickedUp: function() {
+      console.log("chamou o tio");
     }
   },
   data() {
@@ -193,12 +190,12 @@ export default {
       },
       isAskClearDiagram: false,
       dataHistory: [],
-      dragging: false,
       historySelected: null
     };
   },
   methods: {
     clearDiagram() {
+      this.createHistory();
       this.graphData.nodes = [];
       this.graphData.links = [];
       this.isAskClearDiagram = false;
@@ -221,6 +218,7 @@ export default {
       this.isSettingsModalActive = false;
     },
     addNode(item) {
+      this.createHistory();
       this.graphData.nodes.push({
         id: this.generateID(),
         content: {
@@ -254,6 +252,7 @@ export default {
       this.isEditModalActive = true;
     },
     editNode(item) {
+      this.createHistory();
       let tmp = this.graphData.nodes.find(x => x.id === item.id);
       tmp.content.text = item.content.text;
       tmp.content.url = item.content.url;
@@ -271,6 +270,7 @@ export default {
       this.isEditLinkModalActive = true;
     },
     editLink(item) {
+      this.createHistory();
       let tmp = this.graphData.links.find(x => x.id === item.id);
       tmp.color = item.content.color;
       tmp.shape = item.content.shape;
@@ -282,11 +282,11 @@ export default {
       this.editable = false;
     },
     nodeClicked(id) {
-      this.dragging = true;
+      this.createHistory();
       this.$emit("nodeClicked", id);
     },
     linkClicked(id) {
-      this.dragging = true;
+      this.createHistory();
       this.$emit("linkClicked", id);
     },
     nodeRemoved(id) {
@@ -302,11 +302,9 @@ export default {
       this.graphData.links = obj.links;
     },
     nodeClickedUp(id) {
-      this.dragging = false;
       this.$emit("nodeClickedUp", id);
     },
     linkClickedUp(id) {
-      this.dragging = false;
       this.$emit("linkClickedUp", id);
     },
     openInputModal() {
@@ -314,6 +312,7 @@ export default {
       this.json = JSON.stringify(this.graphData);
     },
     importData(value) {
+      this.createHistory();
       const obj = JSON.parse(value.text);
       if (obj) {
         this.graphData = obj;
@@ -334,6 +333,7 @@ export default {
       link.click();
     },
     changeGrid() {
+      this.createHistory();
       this.graphData.width = parseInt(this.settings.width);
       this.graphData.height = parseInt(this.settings.height);
       this.graphData.showGrid = this.settings.showGrid;
@@ -350,15 +350,14 @@ export default {
       this.isSettingsModalActive = false;
     },
     createHistory() {
-      if (!this.dragging) {
-        let strfy = JSON.stringify(this.graphData);
-        let items = this.dataHistory.filter(item => item.object === strfy);
-        if (items.length === 0) {
-          this.dataHistory.push({
-            datetime: new Date().toLocaleString(),
-            object: strfy
-          });
-        }
+      let strfy = JSON.stringify(this.graphData);
+      let items = this.dataHistory.filter(item => item.object === strfy);
+      if (items.length === 0) {
+        this.dataHistory.push({
+          id: this.dataHistory.length + 1,
+          datetime: new Date().toLocaleString(),
+          object: strfy
+        });
       }
     },
     delorean(obj) {

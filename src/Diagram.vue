@@ -240,7 +240,7 @@ export default {
     clickLink(id) {
       this.$emit("linkClicked", id);
     },
-    clickUpLink(id){
+    clickUpLink(id) {
       this.$emit("linkClickedUp", id);
     },
     selectNode(id) {
